@@ -18,8 +18,8 @@ const Sidebar: React.FC<SidebarProps> = ({ onChangeTitle, onSetActiveView }) => 
 
   const handleLogout = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
-    Cookies.remove('token');
-    window.location.href = '/login';
+    Cookies.remove('token', { domain: 'retzius-web.vercel.app' });
+    window.location.replace('/login');
     
   };
 
