@@ -16,7 +16,10 @@ const AlumnoCard: React.FC<AlumnoCardProps> = ({ nombre, matricula, imagenUrl, a
         <Image
           src={imagenUrl}
           alt={nombre}
-          style={{ width: '50px', height: '50px', borderRadius: '50%', marginRight: '1%' }}
+          width = {50}
+          height = {50}
+          className="rounded-circle"
+          style={{borderRadius: '50%', marginRight: '1%' }}
         />
         <div>
           <h5>{nombre} {apellido}</h5>
