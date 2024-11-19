@@ -1,0 +1,76 @@
+import React, { useEffect, useState } from 'react';
+import AlumnoCard from './cards/alumnoscards';
+import { FaPlus } from 'react-icons/fa';
+
+interface Student {
+  id: number;
+  nombre: string;
+  apellido: string;
+  numero_control: string;
+  foto_url: string;
+}
+
+interface AlumnosComponentProps {
+  handleSetActiveView: (view: string) => void;
+  onChangeTitle: (newTitle: string) => void;
+}
+
+const AlumnosComponent: React.FC<AlumnosComponentProps> = ({ handleSetActiveView, onChangeTitle }) => {
+  const handleAddStudent = () => {
+    handleSetActiveView('agregarEstudiante');
+    onChangeTitle('Agregar Estudiante');
+  };
+
+  const [students, setStudents] = useState<Student[]>([]);
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        //const response = await fetch('http://127.0.0.1:8000/students/', {
+        const response = await fetch('https://regzusapi.onrender.com/students/', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${document.cookie.split('token=')[1]}`,
+          },
+        });
+        if (!response.ok) {
+          throw new Error('Error en la solicitud');
+        }
+        const data = await response.json();
+        setStudents(data);
+      } catch (error) {
+        console.error('Error al obtener estudiantes:', error);
+      }
+    };
+
+    fetchStudents();
+  }, []);
+
+  return (
+    <main className="container mt-4">
+      {/* Header */}
+      <div className="d-flex justify-content-between align-items-center" style={{ padding: '2%' }}>
+        <h3 style={{ margin: 0 }}>Estudiantes Registrados</h3>
+        <button className="btn d-flex align-items-center" style={{ backgroundColor: '#1abc9c', color: 'white', padding: '1% 2%', border: 'none', borderRadius: '8px' }} onClick={handleAddStudent}>
+         <FaPlus className="me-2" />Nuevo Estudiante
+        </button>
+      </div>
+
+      {/* Search Bar */}
+      <div className="d-flex justify-content-center mt-3">
+        <input type="text" className="form-control" placeholder="Buscar estudiante..." style={{ width: '80%' }} />
+      </div>
+
+      {/* Student Cards */}
+      <div className="d-flex flex-wrap gap-4 mt-4">
+        {students.map((student) => (
+          <div key={student.id} className="col-12 col-md-6">
+            <AlumnoCard nombre={student.nombre} matricula={student.numero_control} imagenUrl={student.foto_url} apellido={student.apellido} />
+          </div>
+        ))}
+      </div>
+    </main>
+  );
+};
+
+export default AlumnosComponent;
