@@ -59,7 +59,7 @@ const Login = () => {
       const cookies = document.cookie;
       console.log('Cookies después del login:', cookies);
       if (!cookies.includes('token=')) {
-        Cookies.set('token', data.access_token, { expires: 7, secure: true, sameSite: 'None', httponly: true, domain: "retzius-web.vercel.app"});
+        Cookies.set('token', data.access_token, { expires: 7, secure: false, sameSite: 'Lax', httponly: false, domain: "localhost" });
         console.log('Cookie establecida manualmente');
       }
       // Redirigir al perfil del usuario
