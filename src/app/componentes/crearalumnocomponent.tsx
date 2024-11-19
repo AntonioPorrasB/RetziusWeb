@@ -39,7 +39,7 @@ const CrearAlumnoComponent: React.FC = () => {
         const errorData = await response.json();
         setMessage(`Error: ${errorData.detail}`);
       }
-    } catch (error) {
+    } catch{
       setMessage('Error al crear el estudiante');
     }
   };

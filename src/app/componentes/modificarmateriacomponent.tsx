@@ -57,7 +57,7 @@ const ModificarMateriaComponent: React.FC<ModificarMateriaComponentProps> = ({ s
         const errorData = await response.json();
         setMessage(`Error: ${errorData.detail || 'No se pudo actualizar la materia'}`);
       }
-    } catch (error) {
+    } catch{
       setMessage('Error al actualizar la materia');
     }
   };
@@ -77,7 +77,7 @@ const ModificarMateriaComponent: React.FC<ModificarMateriaComponentProps> = ({ s
         const errorData = await response.json();
         setMessage(`Error: ${errorData.detail || 'No se pudo eliminar la materia'}`);
       }
-    } catch (error) {
+    } catch{
       setMessage('Error al eliminar la materia');
     }
   };

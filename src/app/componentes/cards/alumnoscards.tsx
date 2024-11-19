@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 
 interface AlumnoCardProps {
   nombre: string;
@@ -12,7 +13,7 @@ const AlumnoCard: React.FC<AlumnoCardProps> = ({ nombre, matricula, imagenUrl, a
   return (
     <div className="card p-3 shadow-sm rounded-3">
       <div className="d-flex align-items-center">
-        <img
+        <Image
           src={imagenUrl}
           alt={nombre}
           style={{ width: '50px', height: '50px', borderRadius: '50%', marginRight: '1%' }}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaHome, FaUserCircle, FaBook, FaChartBar, FaCog, FaSignOutAlt, FaCheckSquare, FaUserGraduate } from 'react-icons/fa';
+import { FaHome, FaUserCircle, FaBook, FaSignOutAlt, FaCheckSquare, FaUserGraduate } from 'react-icons/fa';
 import Cookies from 'js-cookie';
 
 interface SidebarProps {

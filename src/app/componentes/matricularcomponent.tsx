@@ -14,7 +14,6 @@ interface MatricularComponentProps {
 }
 
 const MatricularComponent: React.FC<MatricularComponentProps> = ({ subjectId }) => {
-  const [students, setStudents] = useState<Student[]>([]);
   const [enrolledStudents, setEnrolledStudents] = useState<Student[]>([]);
   const [nonEnrolledStudents, setNonEnrolledStudents] = useState<Student[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');

@@ -37,7 +37,7 @@ const CrearMateriaComponent: React.FC = () => {
         console.log('Error completo:', errorData);  // Para ver detalles
         setMessage(`Error: ${errorData.detail || 'No se pudo crear la materia'}`);
       }
-    } catch (error) {
+    } catch{
       setMessage('Error al crear la materia');
     }
   };
