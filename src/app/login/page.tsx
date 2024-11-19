@@ -54,8 +54,14 @@ const Login = () => {
 
       const data = await tokenResponse.json();
       // Guardar el token en cookies
-      Cookies.set('token', data.access_token, { expires: 7, secure: false, sameSite: 'Lax', httponly: false, domain: "localhost" });
-      
+
+      console.log('Respuesta del servidor:', data);
+      const cookies = document.cookie;
+      console.log('Cookies después del login:', cookies);
+      if (!cookies.includes('token=')) {
+        Cookies.set('token', data.access_token, { expires: 7, secure: true, sameSite: 'None', httponly: true});
+        console.log('Cookie establecida manualmente');
+      }
       // Redirigir al perfil del usuario
       router.push('/');
     } catch (error) {
