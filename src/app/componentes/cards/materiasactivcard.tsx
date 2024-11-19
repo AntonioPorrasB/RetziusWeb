@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { FaBook } from 'react-icons/fa';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 const MateriasActivCard: React.FC = () => {
   const [materiasCount, setMateriasCount] = useState<number>(0);
