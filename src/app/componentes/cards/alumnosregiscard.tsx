@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FaUserFriends } from 'react-icons/fa';
-import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 const AlumnosRegisCard: React.FC = () => {
   const [alumnosCount, setAlumnosCount] = useState<number>(0);
