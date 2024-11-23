@@ -87,6 +87,11 @@ const ModificarMateriaComponent: React.FC<ModificarMateriaComponentProps> = ({ s
     onChangeTitle('Matricular Estudiante');
   };
 
+  const handleAsistencias = () => {
+    handleSetActiveView('asistencias', subjectId);
+    onChangeTitle('Asistencias');
+  };
+
   return (
     <section className="container mt-4" style={{ backgroundColor: 'white', padding: '5%', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
       <h3 style={{ marginBottom: '2%' }}>Modificar Materia</h3>
@@ -116,6 +121,10 @@ const ModificarMateriaComponent: React.FC<ModificarMateriaComponentProps> = ({ s
 
         <button type="button" onClick={handleMatricularAlumno} className="btn btn-secondary d-flex align-items-center" style={{ padding: '2% 5%', borderRadius: '8px' }}>
           <FaUserPlus className="me-2" /> Matricular Alumno
+        </button>
+
+        <button type="button" onClick={handleAsistencias} className="btn btn-secondary d-flex align-items-center" style={{ padding: '2% 5%', borderRadius: '8px' }}>
+           Asistencias
         </button>
       </form>
 

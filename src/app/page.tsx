@@ -11,6 +11,7 @@ import CrearMateriaComponent from "./componentes/crearmateriacomponent";
 import ModificarMateriaComponent from "./componentes/modificarmateriacomponent"; // Importa el nuevo componente
 import MatricularComponent from "./componentes/matricularcomponent";
 import ProfilePage from "./componentes/perfilcomponent";
+import AsistenciasMateriaComponent from "./componentes/asistenciasmateriacomponent";
 
 export default function Home() {
   const [title, setTitle] = useState('Inicio');
@@ -37,7 +38,8 @@ export default function Home() {
       configuracion: 'Configuración',
       logout: 'Cerrar Sesión',
       modificarMateria: 'Modificar Materia',
-      matricularEstudiante: 'Matricular Estudiante'
+      matricularEstudiante: 'Matricular Estudiante',
+      asistencias: 'Asistencias'
     };
 
     setTitle(viewTitles[view] || ''); // Cambia el título según el valor de `view`
@@ -108,6 +110,12 @@ export default function Home() {
             <ProfilePage />
           </div>
         )}
+
+       {activeView === 'asistencias' && selectedSubjectId !== null && (
+          <div className="mt-4">
+            <AsistenciasMateriaComponent subjectId={selectedSubjectId}/>
+          </div>
+        )} 
 
         {/* Puedes agregar otros componentes según la vista activa */}
       </div>
