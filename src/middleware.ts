@@ -37,5 +37,5 @@ export function middleware(req: NextRequest) {
 
 // Configura las rutas que deseas que este middleware controle
 export const config = {
-    matcher: ["/", "/register", "/login", "/api/recognize_face/"],
+    matcher: ["/", "/register", "/login", "/api/recognize_face/:path*"],
 };
