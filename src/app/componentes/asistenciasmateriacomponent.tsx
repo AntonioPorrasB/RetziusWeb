@@ -11,6 +11,9 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const lastCapturedTime = useRef<number>(0);
   const captureInterval = 500; // Captura cada 0.5 segundos
+  subjectId = 1
+
+  
 
   // Inicia el reconocimiento facial
   const startRecognition = () => {
