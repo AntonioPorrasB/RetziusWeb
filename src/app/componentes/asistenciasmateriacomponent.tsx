@@ -4,14 +4,19 @@ interface AsistenciasMateriaComponentProps {
   subjectId: number;
 }
 
+type RecognitionResult = {
+    name: string;
+    mask: string;
+    hat: string;
+  };
+
 const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = ({
-  subjectId,
+  subjectId: _subjectId,
 }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const lastCapturedTime = useRef<number>(0);
   const captureInterval = 500; // Captura cada 0.5 segundos
-  subjectId = 1
 
   
 
@@ -108,7 +113,7 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
   };
 
   // Actualiza la lista de estudiantes reconocidos
-  const updateStudentList = (results: any[]) => {
+  const updateStudentList = (results: RecognitionResult[]) => {
     if (!Array.isArray(results) || results.length === 0) return;
 
     const studentList = document.getElementById("lista-estudiantes");
@@ -136,10 +141,12 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
   };
 
   useEffect(() => {
+
+    const currentVideoRef = videoRef.current;
     // Limpia el recurso de la cámara cuando el componente se desmonta
     return () => {
-      if (videoRef.current && videoRef.current.srcObject) {
-        const stream = videoRef.current.srcObject as MediaStream;
+      if (currentVideoRef && currentVideoRef.srcObject) {
+        const stream = currentVideoRef.srcObject as MediaStream;
         stream.getTracks().forEach((track) => track.stop());
       }
     };
