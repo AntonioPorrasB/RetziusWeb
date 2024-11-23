@@ -111,19 +111,19 @@ const ModificarMateriaComponent: React.FC<ModificarMateriaComponentProps> = ({ s
           <input type="text" id="horario" className="form-control" value={horario} onChange={(e) => setHorario(e.target.value)} required />
         </div>
 
-        <button type="submit" className="btn btn-primary d-flex align-items-center" style={{ marginRight: '1rem', padding: '2% 5%', backgroundColor: '#3498db', color: 'white', border: 'none', borderRadius: '8px', fontSize: '16px', cursor: 'pointer' }}>
+        <button type="submit" className="btn btn-primary d-flex align-items-center" style={{ marginRight: '1rem', padding: '2% 5%', backgroundColor: '#3498db', color: 'white', border: 'none', borderRadius: '8px', fontSize: '16px', cursor: 'pointer', marginBottom: '1%' }}>
           <FaCheckCircle className="me-2" /> Guardar Cambios
         </button>
 
-        <button type="button" onClick={handleDelete} className="btn btn-danger d-flex align-items-center" style={{ marginRight: '1rem', padding: '2% 5%', borderRadius: '8px' }}>
+        <button type="button" onClick={handleDelete} className="btn btn-danger d-flex align-items-center" style={{ marginRight: '1rem', padding: '2% 5%', borderRadius: '8px', marginBottom: '1%' }}>
           <FaTrash className="me-2" /> Eliminar Materia
         </button>
 
-        <button type="button" onClick={handleMatricularAlumno} className="btn btn-secondary d-flex align-items-center" style={{ padding: '2% 5%', borderRadius: '8px' }}>
+        <button type="button" onClick={handleMatricularAlumno} className="btn btn-secondary d-flex align-items-center" style={{ padding: '2% 5%', borderRadius: '8px', marginBottom: '1%' }}>
           <FaUserPlus className="me-2" /> Matricular Alumno
         </button>
 
-        <button type="button" onClick={handleAsistencias} className="btn btn-secondary d-flex align-items-center" style={{ padding: '2% 5%', borderRadius: '8px' }}>
+        <button type="button" onClick={handleAsistencias} className="btn d-flex align-items-center" style={{ padding: '2% 5%', borderRadius: '8px', backgroundColor: 'blue', marginBottom: '1%' }}>
            Asistencias
         </button>
       </form>

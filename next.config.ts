@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-
   images: {
     remotePatterns: [
       {
@@ -18,7 +17,16 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  /* config options here */
+  
+  // Agregamos las reescrituras
+  async rewrites() {
+    return [
+      {
+        source: "/api/recognize_face", // Ruta en tu frontend
+        destination: "http://85.31.225.19/api/recognize_face", // Ruta en tu backend
+      },
+    ];
+  },
 };
 
 export default nextConfig;

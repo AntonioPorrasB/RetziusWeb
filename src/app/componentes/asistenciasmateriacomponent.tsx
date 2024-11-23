@@ -15,8 +15,20 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const lastCapturedTime = useRef<number>(0);
   const captureInterval = 500; // Captura cada 0.5 segundos
+  const animationFrameRef = useRef<number | null>(null);
 
-  
+
+  const stopRecognition = () => {
+    if (videoRef.current && videoRef.current.srcObject) {
+      const stream = videoRef.current.srcObject as MediaStream;
+      stream.getTracks().forEach((track) => track.stop());
+      videoRef.current.srcObject = null; // Limpia la referencia al stream
+    }
+    if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current); // Cancela la animación pendiente
+      }
+    console.log("Reconocimiento facial detenido");
+  };
 
   // Inicia el reconocimiento facial
   const startRecognition = () => {
@@ -66,7 +78,7 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
                 const formData = new FormData();
                 formData.append("image", blob, "frame.jpg");
 
-                fetch("http://85.31.225.19/api/recognize_face", {
+                fetch("/api/recognize_face", {
                   method: "POST",
                   body: formData,
                 })
@@ -193,6 +205,14 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
         >
           <i className="fas fa-camera me-2"></i>
           Iniciar Reconocimiento
+        </button>
+        <button
+          className="btn btn-danger d-flex align-items-center"
+          onClick={stopRecognition}
+          style={{ fontSize: "16px" }}
+        >
+          <i className="fas fa-stop me-2"></i>
+           Detener Reconocimiento
         </button>
       </section>
 
