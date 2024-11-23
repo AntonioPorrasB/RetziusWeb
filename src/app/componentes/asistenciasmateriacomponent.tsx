@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useEffect, useRef } from "react";
 
 interface AsistenciasMateriaComponentProps {
@@ -78,38 +79,36 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
                 const formData = new FormData();
                 formData.append("image", blob, "frame.jpg");
 
-                fetch("/api/recognize_face", {
-                  method: "POST",
-                  body: formData,
-                })
-                  .then((response) => response.json())
-                  .then((data) => {
-                    console.log("Resultados reconocidos:", data.results);
-                    updateStudentList(data.results);
-
-                    // Muestra la imagen procesada
-                    if (data.processedImage) {
-                      const img = new Image();
-                      img.src = data.processedImage;
-                      img.onload = () => {
-                        if (context) {
-                          context.drawImage(
-                            img,
-                            0,
-                            0,
-                            canvasRef.current!.width,
-                            canvasRef.current!.height
-                          );
-                        }
-                      };
-                    }
+                axios.post('/api/recognize_face', formData, {
+                    headers: {
+                      'Content-Type': 'multipart/form-data',
+                    },
                   })
-                  .catch((error) => {
-                    console.error(
-                      "Error al enviar la imagen al servidor:",
-                      error
-                    );
-                  });
+                    .then((response) => {
+                      const data = response.data;
+                      console.log("Resultados reconocidos:", data.results);
+                      updateStudentList(data.results);
+                  
+                      // Muestra la imagen procesada
+                      if (data.processedImage) {
+                        const img = new Image();
+                        img.src = data.processedImage;
+                        img.onload = () => {
+                          if (context) {
+                            context.drawImage(
+                              img,
+                              0,
+                              0,
+                              canvasRef.current!.width,
+                              canvasRef.current!.height
+                            );
+                          }
+                        };
+                      }
+                    })
+                    .catch((error) => {
+                      console.error("Error al enviar la imagen al servidor:", error);
+                    });
               }
             },
             "image/jpeg",
