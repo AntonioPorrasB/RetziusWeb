@@ -10,9 +10,6 @@ export function middleware(req: NextRequest) {
     const publicRoutes = ["/register", "/login"];
     const protectedRoute = "/";  // Solo la raíz es la ruta protegida
 
-    if (req.nextUrl.pathname.startsWith('/api/recognize_face')) {
-        return NextResponse.rewrite(new URL('http://85.31.225.19/api/recognize_face', req.url))
-      }
 
     // Si el usuario está intentando acceder a una ruta pública
     if (publicRoutes.includes(nextUrl.pathname)) {
@@ -37,5 +34,5 @@ export function middleware(req: NextRequest) {
 
 // Configura las rutas que deseas que este middleware controle
 export const config = {
-    matcher: ["/", "/register", "/login", "/api/recognize_face/:path*"],
+    matcher: ["/", "/register", "/login"],
 };

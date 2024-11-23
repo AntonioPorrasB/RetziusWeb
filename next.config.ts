@@ -18,16 +18,6 @@ const nextConfig: NextConfig = {
     ],
   },
   
-  // Agregamos las reescrituras
-  async rewrites() {
-    return [
-      {
-        source: "/api/recognize_face", // Ruta en tu frontend
-        destination: "http://85.31.225.19/api/recognize_face", // Ruta en tu backend
-        basePath: false
-      },
-    ];
-  },
 };
 
 export default nextConfig;
