@@ -10,9 +10,7 @@ type RecognitionResult = {
     hat: string;
   };
 
-const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = ({
-  subjectId: _subjectId,
-}) => {
+const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const lastCapturedTime = useRef<number>(0);
