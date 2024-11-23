@@ -199,7 +199,7 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
           ></canvas>
         </div>
         <button
-          className="btn btn-primary d-flex align-items-center"
+          className="btn btn-primary d-flex align-items-center mb-1"
           onClick={startRecognition}
           style={{ fontSize: "16px" }}
         >

@@ -123,7 +123,7 @@ const ModificarMateriaComponent: React.FC<ModificarMateriaComponentProps> = ({ s
           <FaUserPlus className="me-2" /> Matricular Alumno
         </button>
 
-        <button type="button" onClick={handleAsistencias} className="btn d-flex align-items-center" style={{ padding: '2% 5%', borderRadius: '8px', backgroundColor: 'blue', marginBottom: '1%' }}>
+        <button type="button" onClick={handleAsistencias} className="btn d-flex align-items-center" style={{ padding: '2% 5%', borderRadius: '8px', backgroundColor: 'blue', marginBottom: '1%', color: 'white' }}>
            Asistencias
         </button>
       </form>

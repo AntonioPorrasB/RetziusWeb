@@ -24,6 +24,7 @@ const nextConfig: NextConfig = {
       {
         source: "/api/recognize_face", // Ruta en tu frontend
         destination: "http://85.31.225.19/api/recognize_face", // Ruta en tu backend
+        basePath: false
       },
     ];
   },
