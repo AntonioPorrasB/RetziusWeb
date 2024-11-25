@@ -16,30 +16,22 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
   const lastCapturedTime = useRef<number>(0);
   const captureInterval = 500; // Captura cada 0.5 segundos
   const animationFrameRef = useRef<number | null>(null);
-  const [isRecognitionActive, setIsRecognitionActive] = useState(false);
 
 
   const stopRecognition = () => {
-    setIsRecognitionActive(false); // Detener el reconocimiento
-
-    // Detener el video y el stream
     if (videoRef.current && videoRef.current.srcObject) {
       const stream = videoRef.current.srcObject as MediaStream;
       stream.getTracks().forEach((track) => track.stop());
-      videoRef.current.srcObject = null;
+      videoRef.current.srcObject = null; // Limpia la referencia al stream
     }
-
-    // Cancelar cualquier animación en curso
     if (animationFrameRef.current) {
-      cancelAnimationFrame(animationFrameRef.current);
-    }
-
+        cancelAnimationFrame(animationFrameRef.current); // Cancela la animación pendiente
+      }
     console.log("Reconocimiento facial detenido");
   };
 
   // Inicia el reconocimiento facial
   const startRecognition = () => {
-    setIsRecognitionActive(true);
     console.log("Reconocimiento facial iniciado");
 
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
