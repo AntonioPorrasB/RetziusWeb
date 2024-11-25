@@ -65,7 +65,6 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
 
   // Captura un fotograma y lo procesa
   const captureFrame = (timestamp: number) => {
-    if (isRecognitionActive == false) return;
     if (timestamp - lastCapturedTime.current > captureInterval) {
       lastCapturedTime.current = timestamp;
 
