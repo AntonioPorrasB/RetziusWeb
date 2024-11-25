@@ -42,12 +42,15 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
       setIsRecognitionActive(true); // Activar el reconocimiento
   
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        console.log("Iniciando reconocimiento facial...");
         navigator.mediaDevices
           .getUserMedia({ video: true })
           .then((stream) => {
+            console.log("Stream obtenido:", stream);
             if (videoRef.current) {
               videoRef.current.srcObject = stream;
               videoRef.current.play();
+              console.log("Reproduciendo video...");
               requestAnimationFrame(captureFrame);
             }
           })
@@ -70,6 +73,7 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
   
         if (canvasRef.current && videoRef.current) {
           const context = canvasRef.current.getContext("2d");
+          console.log("Contexto del canvas:", context);
           if (context) {
             context.drawImage(
               videoRef.current,
@@ -85,7 +89,8 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
                 if (blob) {
                   const formData = new FormData();
                   formData.append("image", blob, "frame.jpg");
-  
+
+                  console.log("Enviando imagen al servidor...");
                   fetch("https://lately-ready-stag.ngrok-free.app/api/recognize_face/", {
                     method: "POST",
                     body: formData,
@@ -194,7 +199,7 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
               height="300"
               autoPlay
               ref={videoRef}
-              style={{ display: "none" }}
+              style={{ display: "block" }}
             ></video>
             <canvas
               id="canvas"
