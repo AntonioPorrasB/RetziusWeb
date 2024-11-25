@@ -66,7 +66,7 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
   // Captura un fotograma y lo procesa
   const captureFrame = (timestamp: number) => {
     if (!isRecognitionActive) return;
-    
+
     if (timestamp - lastCapturedTime.current > captureInterval) {
       lastCapturedTime.current = timestamp;
 
@@ -194,7 +194,7 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
             height="300"
             autoPlay
             ref={videoRef}
-            style={{ display: "none" }}
+            style={{ display: "block" }}
           ></video>
           <canvas
             id="canvas"
