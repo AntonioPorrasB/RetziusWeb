@@ -1,5 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 
+interface AsistenciasMateriaComponentProps {
+  subjectId: number;
+}
 
 type RecognitionResult = {
     name: string;
@@ -8,7 +11,7 @@ type RecognitionResult = {
   };
 
 
-const AsistenciasMateriaComponent: React.FC = () => {
+const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = ()  => {
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const lastCapturedTime = useRef<number>(0);
