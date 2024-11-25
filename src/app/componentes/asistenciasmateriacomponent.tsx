@@ -78,7 +78,7 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
                 const formData = new FormData();
                 formData.append("image", blob, "frame.jpg");
 
-                fetch("https://lately-ready-stag.ngrok-free.app/api/recognize_face", {
+                fetch("https://lately-ready-stag.ngrok-free.app/api/recognize_face/", {
                   method: "POST",
                   body: formData,
                 })
