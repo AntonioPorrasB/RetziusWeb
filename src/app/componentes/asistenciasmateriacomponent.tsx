@@ -72,17 +72,25 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
         lastCapturedTime.current = timestamp;
   
         if (canvasRef.current && videoRef.current) {
-          const context = canvasRef.current.getContext("2d");
+          const canvas = canvasRef.current;
+          const video = videoRef.current;
+
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+
+
+          const context = canvas.getContext("2d");
           console.log("Contexto del canvas:", context);
           if (context) {
             context.drawImage(
-              videoRef.current,
+              video,
               0,
               0,
-              canvasRef.current.width,
-              canvasRef.current.height
+              canvas.width,
+              canvas.height
             );
-  
+            
+            console.log("Contenido del canvas:", canvasRef.current.toDataURL());
             // Convierte el fotograma en un Blob y lo envía al servidor
             canvasRef.current.toBlob(
               (blob) => {
