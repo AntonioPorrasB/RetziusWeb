@@ -56,70 +56,96 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
   };
 
   // Captura un fotograma y lo procesa
-  const captureFrame = (timestamp: number) => {
+  const captureFrame = async (timestamp: number) => {
     if (timestamp - lastCapturedTime.current > captureInterval) {
       lastCapturedTime.current = timestamp;
-
+  
       if (canvasRef.current && videoRef.current) {
         const context = canvasRef.current.getContext("2d");
         if (context) {
-          context.drawImage(
-            videoRef.current,
-            0,
-            0,
-            canvasRef.current.width,
-            canvasRef.current.height
-          );
-
-          // Convierte el fotograma en un Blob y lo envía al servidor
-          canvasRef.current.toBlob(
-            (blob) => {
-              if (blob) {
-                const formData = new FormData();
-                formData.append("image", blob, "frame.jpg");
-
-                fetch("https://lately-ready-stag.ngrok-free.app/api/recognize_face/", {
-                  method: "POST",
-                  body: formData,
-                })
-                  .then((response) => response.json())
-                  .then((data) => {
-                    console.log("Resultados reconocidos:", data.results);
-                    updateStudentList(data.results);
-
-                    // Muestra la imagen procesada
-                    if (data.processedImage) {
-                      const img = new Image();
-                      img.src = data.processedImage;
-                      img.onload = () => {
-                        if (context) {
-                          context.drawImage(
-                            img,
-                            0,
-                            0,
-                            canvasRef.current!.width,
-                            canvasRef.current!.height
-                          );
-                        }
-                      };
-                    }
-                  })
-                  .catch((error) => {
-                    console.error(
-                      "Error al enviar la imagen al servidor:",
-                      error
-                    );
-                  });
-              }
-            },
-            "image/jpeg",
-            0.8
-          );
+          try {
+            // Debug: Verificar que la imagen se captura
+            context.drawImage(
+              videoRef.current,
+              0,
+              0,
+              canvasRef.current.width,
+              canvasRef.current.height
+            );
+            console.log("Frame capturado correctamente");
+  
+            // Debug: Verificar el blob
+            const blob = await new Promise<Blob | null>((resolve) => {
+              canvasRef.current?.toBlob(
+                (blob) => {
+                  console.log("Blob creado:", blob?.size, "bytes");
+                  resolve(blob);
+                },
+                "image/jpeg",
+                0.8
+              );
+            });
+  
+            if (!blob) {
+              throw new Error("No se pudo crear el blob de la imagen");
+            }
+  
+            const formData = new FormData();
+            formData.append("image", blob, "frame.jpg");
+            
+            // Debug: Verificar FormData
+            console.log("FormData creado con blob");
+  
+            // Hacer la petición con logs detallados
+            console.log("Iniciando petición a:", "https://lately-ready-stag.ngrok-free.app/api/recognize_face/");
+            const response = await fetch("https://lately-ready-stag.ngrok-free.app/api/recognize_face/", {
+              method: "POST",
+              body: formData,
+              mode: 'cors',
+              credentials: 'same-origin',
+            });
+            
+            // Este código no se ejecutará si hay error de CORS
+            console.log("Respuesta recibida:", response.status);
+            const data = await response.json();
+            console.log("Datos procesados:", data);
+            
+            updateStudentList(data.results);
+  
+            if (data.processedImage) {
+              const img = new Image();
+              img.src = data.processedImage;
+              img.onload = () => {
+                if (context) {
+                  context.drawImage(
+                    img,
+                    0,
+                    0,
+                    canvasRef.current!.width,
+                    canvasRef.current!.height
+                  );
+                }
+              };
+            }
+          } catch (error: unknown) {
+            // Manejo tipado del error
+            if (error instanceof Error) {
+              console.error("Error detallado:", {
+                message: error.message,
+                type: error.name,
+                stack: error.stack
+              });
+            } else if (error && typeof error === 'object' && 'message' in error) {
+              console.error("Error con mensaje:", error.message);
+            } else {
+              console.error("Error desconocido:", error);
+            }
+          }
         }
       }
     }
-
-    requestAnimationFrame(captureFrame);
+  
+    animationFrameRef.current = requestAnimationFrame(captureFrame);
   };
 
   // Actualiza la lista de estudiantes reconocidos
