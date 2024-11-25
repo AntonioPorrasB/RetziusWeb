@@ -1,8 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 
-interface AsistenciasMateriaComponentProps {
-  subjectId: number;
-}
 
 type RecognitionResult = {
     name: string;
