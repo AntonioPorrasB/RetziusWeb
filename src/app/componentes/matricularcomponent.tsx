@@ -93,6 +93,36 @@ const MatricularComponent: React.FC<MatricularComponentProps> = ({ subjectId }) 
     }
   };
 
+  const handleDeleteMatricula = async (studentId: number) => {
+    try {
+      const response = await fetch(
+        `https://regzusapi.onrender.com/subjects/${subjectId}/enrollments/${studentId}`, 
+        {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${document.cookie.split('token=')[1]}`,
+          },
+        }
+      );
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Error al desmatricular al estudiante');
+      }
+  
+      console.log(`Estudiante con ID ${studentId} desmatriculado.`);
+  
+      // Actualizar las listas
+      const student = enrolledStudents.find((s) => s.id === studentId);
+      if (student) {
+        setEnrolledStudents(enrolledStudents.filter((s) => s.id !== studentId));
+        setNonEnrolledStudents([...nonEnrolledStudents, student]);
+      }
+    } catch (error) {
+      console.error('Error al desmatricular estudiante:', error);
+    }
+  };
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
@@ -142,7 +172,7 @@ const MatricularComponent: React.FC<MatricularComponentProps> = ({ subjectId }) 
       </div>
       <div className="d-flex flex-wrap gap-4 mt-2">
         {filteredEnrolledStudents.map((student) => (
-          <div key={student.id} className="col-12 col-md-6">
+          <div key={student.id} className="col-12 col-md-6" onClick={() => handleDeleteMatricula(student.id)} style={{ cursor: 'pointer' }}>
             <AlumnoCard
               nombre={student.nombre}
               matricula={student.numero_control}
