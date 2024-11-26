@@ -136,6 +136,10 @@ const MatricularComponent: React.FC<MatricularComponentProps> = ({ subjectId }) 
     `${student.nombre} ${student.apellido}`.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const filteredNonEnrolledStudents = nonEnrolledStudents.filter((student) =>
+    `${student.nombre} ${student.apellido}`.toLowerCase().includes(searchTerm1.toLowerCase())
+  );
+
   return (
     <main className="container mt-4">
       {/* Header */}
@@ -147,15 +151,16 @@ const MatricularComponent: React.FC<MatricularComponentProps> = ({ subjectId }) 
       <h5 className="mt-4">Alumnos No Matriculados</h5>
       <div className="d-flex flex-wrap gap-4 mt-2 justify-content-center">
         <input
-        type="text"
-        className="form-control"
-        placeholder="Buscar alumno no matriculado..."
-        style={{ width: '80%' }}
-        value={searchTerm1}
-        onChange={handleSearch1}
-      />
-      <div/>
-        {nonEnrolledStudents.map((student) => (
+          type="text"
+          className="form-control"
+          placeholder="Buscar alumno no matriculado..."
+          style={{ width: '80%' }}
+          value={searchTerm1}
+          onChange={handleSearch1}
+        />
+      </div>
+      <div className="d-flex flex-wrap gap-4 mt-2 justify-content-center">
+        {filteredNonEnrolledStudents.map((student) => (
           <div
             key={student.id}
             className="col-12 col-md-6"
