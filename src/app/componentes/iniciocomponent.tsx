@@ -25,7 +25,7 @@ const InicioComponent: React.FC<inicioProps> = ({ handleSetActiveView, onChangeT
       <div className="col-12 col-md-5" style={{marginRight:'8%'}} onClick={handleClickMaterias}>
         <MateriasActivCard/>
       </div>
-      <div className="col-12 col-md-5">
+      <div className="col-12 col-md-5" onClick={handleClickEstudiantes}>
         <AlumnosRegisCard />
       </div>
       <div className="mt-5">
