@@ -97,7 +97,7 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
             console.log("FormData creado con blob");
   
             // Hacer la petición con logs detallados
-            console.log("Iniciando petición a:", "http://srv643335.hstgr.cloud:8000/api/recognize_face/");
+            console.log("Iniciando petición a:", "http://srv643335.hstgr.cloud/api/recognize_face/");
             const response = await fetch("/api/recognize_face", {
               method: "POST",
               body: formData,
