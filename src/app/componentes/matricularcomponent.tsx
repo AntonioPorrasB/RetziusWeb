@@ -141,6 +141,15 @@ const MatricularComponent: React.FC<MatricularComponentProps> = ({ subjectId }) 
       {/* Section: Alumnos No Matriculados */}
       <h5 className="mt-4">Alumnos No Matriculados</h5>
       <div className="d-flex flex-wrap gap-4 mt-2">
+        <input
+        type="text"
+        className="form-control"
+        placeholder="Buscar alumno no matriculado..."
+        style={{ width: '80%' }}
+        value={searchTerm}
+        onChange={handleSearch}
+      />
+      <div/>
         {nonEnrolledStudents.map((student) => (
           <div
             key={student.id}

@@ -14,6 +14,11 @@ const InicioComponent: React.FC<inicioProps> = ({ handleSetActiveView, onChangeT
     onChangeTitle('Materias');  // Cambiar la vista activa al hacer clic
   };
 
+  const handleClickEstudiantes = () => {
+    handleSetActiveView('estudiantes');
+    onChangeTitle('Estudiantes');  // Cambiar la vista activa al hacer clic
+  };
+
 
   return (
     <div className="d-flex flex-wrap gap-5" style={{marginLeft:'5%', paddingBottom:'16%'}}>
