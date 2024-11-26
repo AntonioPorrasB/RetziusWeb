@@ -127,6 +127,10 @@ const MatricularComponent: React.FC<MatricularComponentProps> = ({ subjectId }) 
     setSearchTerm(e.target.value);
   };
 
+  const handleSearch1 = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
   const filteredEnrolledStudents = enrolledStudents.filter((student) =>
     `${student.nombre} ${student.apellido}`.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -140,14 +144,14 @@ const MatricularComponent: React.FC<MatricularComponentProps> = ({ subjectId }) 
 
       {/* Section: Alumnos No Matriculados */}
       <h5 className="mt-4">Alumnos No Matriculados</h5>
-      <div className="d-flex flex-wrap gap-4 mt-2">
+      <div className="d-flex flex-wrap gap-4 mt-2 justify-content-center">
         <input
         type="text"
         className="form-control"
         placeholder="Buscar alumno no matriculado..."
         style={{ width: '80%' }}
         value={searchTerm}
-        onChange={handleSearch}
+        onChange={handleSearch1}
       />
       <div/>
         {nonEnrolledStudents.map((student) => (
