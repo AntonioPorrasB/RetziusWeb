@@ -16,7 +16,6 @@ const ModificarMateriaComponent: React.FC<ModificarMateriaComponentProps> = ({ s
   useEffect(() => {
     const fetchSubject = async () => {
       try {
-        //const response = await fetch(`http://127.0.0.1:8000/subjects/${subjectId}`, {
         const response = await fetch(`https://regzusapi.onrender.com/subjects/${subjectId}`, {
           method: 'GET',
           headers: {
@@ -42,7 +41,6 @@ const ModificarMateriaComponent: React.FC<ModificarMateriaComponentProps> = ({ s
     const subjectData = { nombre, descripcion, horario };
 
     try {
-      //const response = await fetch(`http://127.0.0.1:8000/subjects/${subjectId}`, {
       const response = await fetch(`https://regzusapi.onrender.com/subjects/${subjectId}`, {
         method: 'PUT',
         headers: {
@@ -57,14 +55,13 @@ const ModificarMateriaComponent: React.FC<ModificarMateriaComponentProps> = ({ s
         const errorData = await response.json();
         setMessage(`Error: ${errorData.detail || 'No se pudo actualizar la materia'}`);
       }
-    } catch{
+    } catch {
       setMessage('Error al actualizar la materia');
     }
   };
 
   const handleDelete = async () => {
     try {
-      //const response = await fetch(`http://127.0.0.1:8000/subjects/${subjectId}`, {
       const response = await fetch(`https://regzusapi.onrender.com/subjects/${subjectId}`, {
         method: 'DELETE',
         headers: {
@@ -77,7 +74,7 @@ const ModificarMateriaComponent: React.FC<ModificarMateriaComponentProps> = ({ s
         const errorData = await response.json();
         setMessage(`Error: ${errorData.detail || 'No se pudo eliminar la materia'}`);
       }
-    } catch{
+    } catch {
       setMessage('Error al eliminar la materia');
     }
   };
@@ -96,39 +93,42 @@ const ModificarMateriaComponent: React.FC<ModificarMateriaComponentProps> = ({ s
     <section className="container mt-4" style={{ backgroundColor: 'white', padding: '5%', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
       <h3 style={{ marginBottom: '2%' }}>Modificar Materia</h3>
       <form onSubmit={handleUpdate}>
-        <div className="form-group" style={{ marginBottom: '5%' }}>
+        <div className="form-group mb-4">
           <label htmlFor="nombre">Nombre</label>
           <input type="text" id="nombre" className="form-control" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
         </div>
 
-        <div className="form-group" style={{ marginBottom: '5%' }}>
+        <div className="form-group mb-4">
           <label htmlFor="descripcion">Descripción</label>
           <input type="text" id="descripcion" className="form-control" value={descripcion} onChange={(e) => setDescripcion(e.target.value)} required />
         </div>
 
-        <div className="form-group" style={{ marginBottom: '5%' }}>
+        <div className="form-group mb-4">
           <label htmlFor="horario">Horario</label>
           <input type="text" id="horario" className="form-control" value={horario} onChange={(e) => setHorario(e.target.value)} required />
         </div>
 
-        <button type="submit" className="btn btn-primary d-flex align-items-center" style={{ marginRight: '1rem', padding: '2% 5%', backgroundColor: '#3498db', color: 'white', border: 'none', borderRadius: '8px', fontSize: '16px', cursor: 'pointer', marginBottom: '1%' }}>
-          <FaCheckCircle className="me-2" /> Guardar Cambios
-        </button>
+        {/* Botones Responsivos */}
+        <div className="d-flex flex-column flex-md-row gap-3 mt-4">
+          <button type="submit" className="btn btn-primary d-flex align-items-center justify-content-center flex-grow-1">
+            <FaCheckCircle className="me-2" /> Guardar Cambios
+          </button>
 
-        <button type="button" onClick={handleDelete} className="btn btn-danger d-flex align-items-center" style={{ marginRight: '1rem', padding: '2% 5%', borderRadius: '8px', marginBottom: '1%' }}>
-          <FaTrash className="me-2" /> Eliminar Materia
-        </button>
+          <button type="button" onClick={handleDelete} className="btn btn-danger d-flex align-items-center justify-content-center flex-grow-1">
+            <FaTrash className="me-2" /> Eliminar Materia
+          </button>
 
-        <button type="button" onClick={handleMatricularAlumno} className="btn btn-secondary d-flex align-items-center" style={{ padding: '2% 5%', borderRadius: '8px', marginBottom: '1%' }}>
-          <FaUserPlus className="me-2" /> Matricular Alumno
-        </button>
+          <button type="button" onClick={handleMatricularAlumno} className="btn btn-secondary d-flex align-items-center justify-content-center flex-grow-1">
+            <FaUserPlus className="me-2" /> Matricular Alumno
+          </button>
 
-        <button type="button" onClick={handleAsistencias} className="btn d-flex align-items-center" style={{ padding: '2% 5%', borderRadius: '8px', backgroundColor: 'blue', marginBottom: '1%', color: 'white' }}>
-           Asistencias
-        </button>
+          <button type="button" onClick={handleAsistencias} className="btn btn-info d-flex align-items-center justify-content-center flex-grow-1 text-white">
+            Asistencias
+          </button>
+        </div>
       </form>
 
-      {message && <p style={{ marginTop: '2%', color: message.startsWith('Error') ? 'red' : 'green' }}>{message}</p>}
+      {message && <p className="mt-4 text-center" style={{ color: message.startsWith('Error') ? 'red' : 'green' }}>{message}</p>}
     </section>
   );
 };
