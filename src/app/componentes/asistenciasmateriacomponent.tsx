@@ -21,13 +21,31 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
   const stopRecognition = () => {
     if (videoRef.current && videoRef.current.srcObject) {
       const stream = videoRef.current.srcObject as MediaStream;
-      stream.getTracks().forEach((track) => track.stop());
-      videoRef.current.srcObject = null; // Limpia la referencia al stream
+  
+      // Detiene todos los tracks (cámara y micrófono si existen)
+      stream.getTracks().forEach((track) => {
+        track.stop();
+      });
+  
+      // Limpia la referencia al stream
+      videoRef.current.srcObject = null;
     }
+  
+    // Cancela cualquier frame de animación pendiente
     if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current); // Cancela la animación pendiente
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null; // Limpia la referencia al frame
+    }
+  
+    // Limpia el canvas para evitar que quede la última imagen capturada
+    if (canvasRef.current) {
+      const context = canvasRef.current.getContext("2d");
+      if (context) {
+        context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
       }
-    console.log("Reconocimiento facial detenido");
+    }
+  
+    console.log("Reconocimiento facial detenido completamente.");
   };
 
   // Inicia el reconocimiento facial

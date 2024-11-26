@@ -123,6 +123,9 @@ const ModificarMateriaComponent: React.FC<ModificarMateriaComponentProps> = ({ s
           </button>
 
           <button type="button" onClick={handleAsistencias} className="btn btn-info d-flex align-items-center justify-content-center flex-grow-1 text-white">
+            Tomar Asistencia
+          </button>
+          <button type="button" onClick={handleAsistencias} className="btn btn-info d-flex align-items-center justify-content-center flex-grow-1 text-white">
             Asistencias
           </button>
         </div>
