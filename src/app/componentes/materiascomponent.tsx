@@ -15,17 +15,12 @@ interface MateriasComponentProps {
 }
 
 const MateriasComponent: React.FC<MateriasComponentProps> = ({ handleSetActiveView, onChangeTitle }) => {
-  const handleAddSubject = () => {
-    handleSetActiveView('agregarMateria');
-    onChangeTitle('Agregar Materia');
-  };
-
   const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>(''); // Estado para el término de búsqueda
 
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
-        //const response = await fetch('http://127.0.0.1:8000/subjects/', {
         const response = await fetch('https://regzusapi.onrender.com/subjects/', {
           method: 'GET',
           headers: {
@@ -45,6 +40,16 @@ const MateriasComponent: React.FC<MateriasComponentProps> = ({ handleSetActiveVi
     fetchSubjects();
   }, []);
 
+  // Filtrar materias según el término de búsqueda
+  const filteredSubjects = subjects.filter((subject) =>
+    subject.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleAddSubject = () => {
+    handleSetActiveView('agregarMateria');
+    onChangeTitle('Agregar Materia');
+  };
+
   // Función para manejar el clic en la tarjeta de materia
   const handleCardClick = (subjectId: number) => {
     handleSetActiveView('modificarMateria', subjectId);
@@ -56,19 +61,30 @@ const MateriasComponent: React.FC<MateriasComponentProps> = ({ handleSetActiveVi
       {/* Header */}
       <div className="d-flex justify-content-between align-items-center" style={{ padding: '2%' }}>
         <h3 style={{ margin: 0 }}>Materias Registradas</h3>
-        <button className="btn d-flex align-items-center" style={{ backgroundColor: '#1abc9c', color: 'white', padding: '1% 2%', border: 'none', borderRadius: '8px' }} onClick={handleAddSubject}>
-         <FaPlus className="me-2" />Nueva Materia
+        <button
+          className="btn d-flex align-items-center"
+          style={{ backgroundColor: '#1abc9c', color: 'white', padding: '1% 2%', border: 'none', borderRadius: '8px' }}
+          onClick={handleAddSubject}
+        >
+          <FaPlus className="me-2" />Nueva Materia
         </button>
       </div>
 
       {/* Search Bar */}
       <div className="d-flex justify-content-center mt-3">
-        <input type="text" className="form-control" placeholder="Buscar materia..." style={{ width: '80%' }} />
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Buscar materia..."
+          style={{ width: '80%' }}
+          value={searchTerm} // Asociar el estado de búsqueda
+          onChange={(e) => setSearchTerm(e.target.value)} // Actualizar el estado de búsqueda
+        />
       </div>
 
       {/* Subject Cards */}
       <div className="d-flex flex-wrap gap-4 mt-4">
-        {subjects.map((subject) => (
+        {filteredSubjects.map((subject) => (
           <div key={subject.id} className="col-12 col-md-6" onClick={() => handleCardClick(subject.id)}>
             <MateriasCard nombre={subject.nombre} horario={subject.horario} />
           </div>
