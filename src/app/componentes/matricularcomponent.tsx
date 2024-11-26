@@ -17,6 +17,7 @@ const MatricularComponent: React.FC<MatricularComponentProps> = ({ subjectId }) 
   const [enrolledStudents, setEnrolledStudents] = useState<Student[]>([]);
   const [nonEnrolledStudents, setNonEnrolledStudents] = useState<Student[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [searchTerm1, setSearchTerm1] = useState<string>('');
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -128,7 +129,7 @@ const MatricularComponent: React.FC<MatricularComponentProps> = ({ subjectId }) 
   };
 
   const handleSearch1 = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
+    setSearchTerm1(e.target.value);
   };
 
   const filteredEnrolledStudents = enrolledStudents.filter((student) =>
@@ -150,7 +151,7 @@ const MatricularComponent: React.FC<MatricularComponentProps> = ({ subjectId }) 
         className="form-control"
         placeholder="Buscar alumno no matriculado..."
         style={{ width: '80%' }}
-        value={searchTerm}
+        value={searchTerm1}
         onChange={handleSearch1}
       />
       <div/>
