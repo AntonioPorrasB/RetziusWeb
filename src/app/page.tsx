@@ -65,7 +65,7 @@ export default function Home() {
         {/* Renderizar contenido según la vista activa */}
         {activeView === 'inicio' && (
           <div className="mt-4">
-            <InicioComponent />
+            <InicioComponent handleSetActiveView={handleSetActiveView} onChangeTitle={handleTitleChange} />
           </div>
         )}
 

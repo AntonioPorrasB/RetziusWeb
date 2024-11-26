@@ -2,11 +2,23 @@ import React from 'react';
 import MateriasActivCard from './cards/materiasactivcard';
 import AlumnosRegisCard from './cards/alumnosregiscard';
 
-const InicioComponent = () => {
+interface inicioProps {
+  handleSetActiveView: (newTitle: string) => void;
+  onChangeTitle: (view: string) => void; // Nueva función para cambiar la vista activa
+}
+
+const InicioComponent: React.FC<inicioProps> = ({ handleSetActiveView, onChangeTitle }) => {
+
+  const handleClickMaterias = () => {
+    handleSetActiveView('materias');
+    onChangeTitle('Materias');  // Cambiar la vista activa al hacer clic
+  };
+
+
   return (
     <div className="d-flex flex-wrap gap-5" style={{marginLeft:'5%', paddingBottom:'16%'}}>
-      <div className="col-12 col-md-5" style={{marginRight:'8%'}}>
-        <MateriasActivCard />
+      <div className="col-12 col-md-5" style={{marginRight:'8%'}} onClick={handleClickMaterias}>
+        <MateriasActivCard/>
       </div>
       <div className="col-12 col-md-5">
         <AlumnosRegisCard />
