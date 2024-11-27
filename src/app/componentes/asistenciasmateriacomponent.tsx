@@ -3,8 +3,6 @@ import * as XLSX from "xlsx";
 
 interface AsistenciasMateriaComponentProps {
   subjectId: number;
-  subjectName: string;
-  numero_control: string;
 }
 
 type RecognitionResult =  {
@@ -17,13 +15,37 @@ type RecognizedStudent = RecognitionResult & {
     apellido: string;
   };
 
-const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = ({subjectId, subjectName, numero_control}) => {
+const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = ({subjectId}) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const lastCapturedTime = useRef<number>(0);
   const captureInterval = 500; // Captura cada 0.5 segundos
   const animationFrameRef = useRef<number | null>(null);
   const [recognizedStudents, setRecognizedStudents] = useState<RecognizedStudent[]>([]);
+  const [nombre, setNombre] = useState('');
+
+  useEffect(() => {
+    const fetchSubject = async () => {
+      try {
+        const response = await fetch(`https://regzusapi.onrender.com/subjects/${subjectId}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${document.cookie.split('token=')[1]}`,
+          },
+        });
+        if (!response.ok) throw new Error('No se pudo cargar la materia');
+
+        const data = await response.json();
+        setNombre(data.nombre);
+
+      } catch (error) {
+        console.error('Error al cargar materia:', error);
+      }
+    };
+
+    fetchSubject();
+  }, [subjectId]);
+
 
 
 
@@ -253,7 +275,7 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
     });
   
     const data = recognizedStudents.map((student) => ({
-      Matricula: student.numeroControl, // Primeros 4 caracteres
+      Matricula: student.numeroControl,
       Apellidos: student.apellido,
       Nombre: student.nombre
     }));
@@ -262,12 +284,12 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Asistencia");
   
-    XLSX.utils.sheet_add_aoa(worksheet, [[`Materia: ${subjectName}`]], {
+    XLSX.utils.sheet_add_aoa(worksheet, [[`Materia: ${nombre}`]], {
       origin: "A1",
     });
     XLSX.utils.sheet_add_aoa(worksheet, [[`Fecha: ${today}`]], { origin: "A2" });
   
-    XLSX.writeFile(workbook, `Asistencia_${subjectName}_${today}.xlsx`);
+    XLSX.writeFile(workbook, `Asistencia_${nombre}_${today}.xlsx`);
   };
 
   useEffect(() => {
