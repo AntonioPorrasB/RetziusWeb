@@ -1,21 +1,30 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import * as XLSX from "xlsx";
 
 interface AsistenciasMateriaComponentProps {
   subjectId: number;
+  subjectName: string;
+  numero_control: string;
 }
 
-type RecognitionResult = {
-    name: string;
-    mask: string;
-    hat: string;
+type RecognitionResult =  {
+  name: string;
+};
+
+type RecognizedStudent = RecognitionResult & {
+    numeroControl: string;
+    nombre: string;
+    apellido: string;
   };
 
-const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = () => {
+const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = ({subjectId, subjectName, numero_control}) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const lastCapturedTime = useRef<number>(0);
   const captureInterval = 500; // Captura cada 0.5 segundos
   const animationFrameRef = useRef<number | null>(null);
+  const [recognizedStudents, setRecognizedStudents] = useState<RecognizedStudent[]>([]);
+
 
 
   const stopRecognition = () => {
@@ -167,31 +176,98 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
   };
 
   // Actualiza la lista de estudiantes reconocidos
-  const updateStudentList = (results: RecognitionResult[]) => {
+  const updateStudentList = async (results: RecognitionResult[]) => {
     if (!Array.isArray(results) || results.length === 0) return;
 
-    const studentList = document.getElementById("lista-estudiantes");
-    if (!studentList) return;
+    const filteredResults = results.filter(
+        (result) => result.name !== "Desconocido"
+    );
 
-    results.forEach((result) => {
-      const studentName = result.name;
-      const maskStatus = result.mask;
-      const hatStatus = result.hat;
+    // Crear un array para almacenar estudiantes reconocidos
+    const newRecognizedStudents: RecognizedStudent[] = [];
 
-      if (studentName === "Desconocido") return;
+    for (const result of filteredResults) {
+        try {
+            const response = await fetch(`https://regzusapi.onrender.com/students/by_control/${result.name}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${document.cookie.split('token=')[1]}`,
+                },
+            });
 
-      // Evitar agregar duplicados en la lista
-      if (
-        !Array.from(studentList.children).some((li) =>
-          li.textContent?.includes(studentName)
-        )
-      ) {
-        const listItem = document.createElement("li");
-        listItem.className = "estudiante";
-        listItem.textContent = `${studentName} - Presente - ${maskStatus} - ${hatStatus}`;
-        studentList.appendChild(listItem);
-      }
+            if (!response.ok) {
+                console.error(`No se encontró estudiante con número de control: ${result.name}`);
+                continue;
+            }
+
+            const studentData = await response.json();
+
+            // Crear un estudiante reconocido
+            const recognizedStudent: RecognizedStudent = {
+                name: result.name,
+                numeroControl: studentData.numero_control,
+                nombre: studentData.nombre,
+                apellido: studentData.apellido
+            };
+
+            // Verificar si ya existe
+            const isAlreadyAdded = newRecognizedStudents.some(
+                (student) => student.numeroControl === recognizedStudent.numeroControl
+            );
+
+            if (!isAlreadyAdded) {
+                newRecognizedStudents.push(recognizedStudent);
+            }
+
+        } catch (error) {
+            console.error(`Error al obtener datos del estudiante ${result.name}:`, error);
+        }
+    }
+
+    // Actualizar el estado con los nuevos estudiantes reconocidos
+    setRecognizedStudents(prevStudents => {
+        // Combinar estudiantes existentes con nuevos, evitando duplicados
+        const combinedStudents = [
+            ...prevStudents,
+            ...newRecognizedStudents.filter(
+                newStudent => !prevStudents.some(
+                    existingStudent => existingStudent.numeroControl === newStudent.numeroControl
+                )
+            )
+        ];
+
+        return combinedStudents;
     });
+  };
+
+  const generateExcelReport = () => {
+    if (recognizedStudents.length === 0) {
+      alert("No se han reconocido alumnos aún.");
+      return;
+    }
+  
+    const today = new Date().toLocaleDateString('es-MX', { 
+      day: '2-digit', 
+      month: '2-digit', 
+      year: 'numeric' 
+    });
+  
+    const data = recognizedStudents.map((student) => ({
+      Matricula: student.numeroControl, // Primeros 4 caracteres
+      Apellidos: student.apellido,
+      Nombre: student.nombre
+    }));
+  
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Asistencia");
+  
+    XLSX.utils.sheet_add_aoa(worksheet, [[`Materia: ${subjectName}`]], {
+      origin: "A1",
+    });
+    XLSX.utils.sheet_add_aoa(worksheet, [[`Fecha: ${today}`]], { origin: "A2" });
+  
+    XLSX.writeFile(workbook, `Asistencia_${subjectName}_${today}.xlsx`);
   };
 
   useEffect(() => {
@@ -265,10 +341,10 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
         <button
           className="btn btn-success"
           style={{ fontSize: "16px", padding: "10px 20px" }}
+          onClick={generateExcelReport}
         >
           Reporte
         </button>
-        <ul id="lista-estudiantes" className="mt-3"></ul>
       </section>
     </div>
   );
