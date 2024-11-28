@@ -12,6 +12,7 @@ import ModificarMateriaComponent from "./componentes/modificarmateriacomponent";
 import MatricularComponent from "./componentes/matricularcomponent";
 import ProfilePage from "./componentes/perfilcomponent";
 import AsistenciasMateriaComponent from "./componentes/asistenciasmateriacomponent";
+import AttendanceListComponent from "./componentes/listasistenciacomponent";
 
 export default function Home() {
   const [title, setTitle] = useState('Inicio');
@@ -39,7 +40,8 @@ export default function Home() {
       logout: 'Cerrar Sesión',
       modificarMateria: 'Modificar Materia',
       matricularEstudiante: 'Matricular Estudiante',
-      asistencias: 'Asistencias'
+      asistencias: 'Asistencias',
+      listaAsistencias: 'Lista Asistencias'
     };
 
     setTitle(viewTitles[view] || ''); // Cambia el título según el valor de `view`
@@ -114,6 +116,12 @@ export default function Home() {
        {activeView === 'asistencias' && selectedSubjectId !== null && (
           <div className="mt-4">
             <AsistenciasMateriaComponent subjectId={selectedSubjectId}/>
+          </div>
+        )} 
+
+       {activeView === 'listaAsistencias' && selectedSubjectId !== null && (
+          <div className="mt-4">
+            <AttendanceListComponent subjectId={selectedSubjectId}/>
           </div>
         )} 
 
