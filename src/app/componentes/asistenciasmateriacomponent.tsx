@@ -19,7 +19,7 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const lastCapturedTime = useRef<number>(0);
-  const captureInterval = 500; // Captura cada 0.5 segundos
+  const captureInterval = 100; // Captura cada 0.5 segundos
   const animationFrameRef = useRef<number | null>(null);
   const [recognizedStudents, setRecognizedStudents] = useState<RecognizedStudent[]>([]);
   const [nombre, setNombre] = useState('');
@@ -131,7 +131,7 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
                   resolve(blob);
                 },
                 "image/jpeg",
-                0.8
+                0.5
               );
             });
   
