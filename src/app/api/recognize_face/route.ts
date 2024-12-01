@@ -11,7 +11,7 @@ export async function POST(request: Request) {
     const formData = await request.formData();
     
     // Usar axios para la petición
-    const response = await axios.post('http://srv643335.hstgr.cloud:8000/api/recognize_face/', formData, {
+    const response = await axios.post('http://srv643335.hstgr.cloud/api/recognize_face/', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         'Accept': 'application/json',
