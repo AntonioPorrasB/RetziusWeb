@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaHome, FaUserCircle, FaBook, FaSignOutAlt, FaCheckSquare, FaUserGraduate } from 'react-icons/fa';
 import Cookies from 'js-cookie';
 
@@ -9,6 +9,17 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ onChangeTitle, onSetActiveView }) => {
   const [activeLink, setActiveLink] = useState('inicio');
+  const [showIcons, setShowIcons] = useState(true); // Nueva variable de estado para controlar la visibilidad de los iconos
+
+  useEffect(() => {
+    // Verificar el tamaño de la pantalla y actualizar la visibilidad de los iconos
+    const handleResize = () => {
+      setShowIcons(window.innerWidth >= 414); // 414px es el ancho del iPhone 16 Pro
+    };
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Establecer el estado inicial
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleClick = (link: string, title: string) => {
     setActiveLink(link);
@@ -48,26 +59,31 @@ const Sidebar: React.FC<SidebarProps> = ({ onChangeTitle, onSetActiveView }) => 
       <ul className="nav-list align-items-center" style={{ fontSize: '0.9rem', padding: '0 1rem' }}>
         <li>
           <a href="#" onClick={(e) => { e.preventDefault(); handleClick('inicio', 'Inicio'); }} className={getLinkStyle('inicio')}>
+            {showIcons && <FaHome className="fs-4 me-3" />}
             <span>Inicio</span>
           </a>
         </li>
         <li>
           <a href="#perfil" onClick={(e) => { e.preventDefault(); handleClick('perfil', 'Perfil'); }} className={getLinkStyle('perfil')}>
+            {showIcons && <FaUserCircle className="fs-4 me-3" />}
             <span>Perfil</span>
           </a>
         </li>
         <li>
           <a href="#materias" onClick={(e) => { e.preventDefault(); handleClick('materias', 'Materias'); }} className={getLinkStyle('materias')}>
+            {showIcons && <FaBook className="fs-4 me-3" />}
             <span>Materias</span>
           </a>
         </li>
         <li>
           <a href="#estudiantes" onClick={(e) => { e.preventDefault(); handleClick('estudiantes', 'Estudiantes'); }} className={getLinkStyle('Estudiantes')}>
+            {showIcons && <FaUserGraduate className="fs-4 me-3" />}
             <span>Estudiantes</span>
           </a>
         </li>
         <li>
           <a href="/login" onClick={handleLogout} className={getLinkStyle('logout')}>
+            {showIcons && <FaSignOutAlt className="fs-4 me-3" />}
             <span>Cerrar Sesión</span>
           </a>
         </li>
