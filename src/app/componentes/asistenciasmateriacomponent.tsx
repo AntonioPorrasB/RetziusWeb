@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect, useRef, useState } from "react";
 import * as XLSX from "xlsx";
 
@@ -19,7 +20,7 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const lastCapturedTime = useRef<number>(0);
-  const captureInterval = 1000; // Captura cada 0.5 segundos
+  const captureInterval = 500; // Captura cada 0.5 segundos
   const animationFrameRef = useRef<number | null>(null);
   const [recognizedStudents, setRecognizedStudents] = useState<RecognizedStudent[]>([]);
   const [nombre, setNombre] = useState('');
