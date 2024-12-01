@@ -1,4 +1,3 @@
-'use client'
 import React, { useEffect, useRef, useState } from "react";
 import * as XLSX from "xlsx";
 
@@ -202,127 +201,91 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
   const updateStudentList = async (results: RecognitionResult[]) => {
     if (!Array.isArray(results) || results.length === 0) return;
   
-    // Obtener todos los estudiantes matriculados en la materia
-    try {
-        const enrolledStudentsResponse = await fetch(`https://regzusapi.onrender.com/subjects/${subjectId}/enrollments`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${document.cookie.split('token=')[1]}`,
-            },
+    const filteredResults = results.filter(
+      (result) => result.name !== "Desconocido"
+    );
+  
+    const newRecognizedStudents: RecognizedStudent[] = [];
+  
+    for (const result of filteredResults) {
+      try {
+        const response = await fetch(`https://regzusapi.onrender.com/students/by_control/${result.name}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${document.cookie.split('token=')[1]}`,
+          },
         });
-
-        if (!enrolledStudentsResponse.ok) {
-            console.error('No se pudo obtener la lista de estudiantes matriculados');
-            return;
+  
+        if (!response.ok) {
+          console.error(`No se encontró estudiante con número de control: ${result.name}`);
+          continue;
         }
-
-        const enrolledStudents = await enrolledStudentsResponse.json();
-
-        // Filtrar resultados reconocidos
-        const filteredResults = results.filter(
-            (result) => result.name !== "Desconocido"
+  
+        const studentData = await response.json();
+  
+        const recognizedStudent: RecognizedStudent = {
+          name: result.name,
+          numeroControl: studentData.numero_control,
+          nombre: studentData.nombre,
+          apellido: studentData.apellido
+        };
+  
+        // Verificar si ya existe
+        const isAlreadyAdded = newRecognizedStudents.some(
+          (student) => student.numeroControl === recognizedStudent.numeroControl
         );
-    
-        const newRecognizedStudents: RecognizedStudent[] = [];
-        let unrecognizedStudents: RecognizedStudent[] = [];
-    
-        // Procesar estudiantes reconocidos
-        for (const result of filteredResults) {
-            try {
-                const response = await fetch(`https://regzusapi.onrender.com/students/by_control/${result.name}`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${document.cookie.split('token=')[1]}`,
-                    },
-                });
-    
-                if (!response.ok) {
-                    console.error(`No se encontró estudiante con número de control: ${result.name}`);
-                    continue;
-                }
-    
-                const studentData = await response.json();
-    
-                const recognizedStudent: RecognizedStudent = {
-                    name: result.name,
-                    numeroControl: studentData.numero_control,
-                    nombre: studentData.nombre,
-                    apellido: studentData.apellido
-                };
-    
-                // Verificar si ya existe
-                const isAlreadyAdded = newRecognizedStudents.some(
-                    (student) => student.numeroControl === recognizedStudent.numeroControl
-                );
-    
-                if (!isAlreadyAdded) {
-                    newRecognizedStudents.push(recognizedStudent);
-                }
-    
-            } catch (error) {
-                console.error(`Error al obtener datos del estudiante ${result.name}:`, error);
-            }
+  
+        if (!isAlreadyAdded) {
+          newRecognizedStudents.push(recognizedStudent);
         }
-
-        // Identificar estudiantes no reconocidos
-        unrecognizedStudents = enrolledStudents.filter(
-          (            student: { numero_control: string; }) => !newRecognizedStudents.some(
-                recognized => recognized.numeroControl === student.numero_control
-            )
-        );
-    
-        // Preparar datos de asistencia
-        const attendanceData = [
-            ...newRecognizedStudents.map(student => ({
-                student_id: parseInt(student.numeroControl),
-                presente: true
-            })),
-            ...unrecognizedStudents.map(student => ({
-                student_id: parseInt(student.numeroControl),
-                presente: false
-            }))
-        ];
-    
-        // Enviar a la API de asistencia
-        if (attendanceData.length > 0) {
-            try {
-                const apiResponse = await fetch(`https://regzusapi.onrender.com/subjects/${subjectId}/attendance/`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${document.cookie.split('token=')[1]}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(attendanceData)
-                });
-    
-                if (!apiResponse.ok) {
-                    const errorData = await apiResponse.json();
-                    console.error('Error al enviar asistencia:', errorData);
-                    alert('No se pudo registrar la asistencia completamente');
-                }
-            } catch (apiError) {
-                console.error('Error en la solicitud de asistencia:', apiError);
-                alert('Hubo un problema al registrar la asistencia');
-            }
-        }
-    
-        // Actualizar el estado con los nuevos estudiantes reconocidos
-        setRecognizedStudents(prevStudents => {
-            const combinedStudents = [
-                ...prevStudents,
-                ...newRecognizedStudents.filter(
-                    newStudent => !prevStudents.some(
-                        existingStudent => existingStudent.numeroControl === newStudent.numeroControl
-                    )
-                )
-            ];
-    
-            return combinedStudents;
-        });
-    
-    } catch (error) {
-        console.error('Error al obtener estudiantes matriculados:', error);
+  
+      } catch (error) {
+        console.error(`Error al obtener datos del estudiante ${result.name}:`, error);
+      }
     }
+  
+    // Enviar a la API de asistencia
+    if (newRecognizedStudents.length > 0) {
+      try {
+        const attendanceData = newRecognizedStudents.map(student => ({
+          student_id: parseInt(student.numeroControl),
+          presente: true
+        }));
+  
+        const apiResponse = await fetch(`https://regzusapi.onrender.com/subjects/${subjectId}/attendance/`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${document.cookie.split('token=')[1]}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(attendanceData)
+        });
+  
+        if (!apiResponse.ok) {
+          const errorData = await apiResponse.json();
+          console.error('Error al enviar asistencia:', errorData);
+          // Opcional: Mostrar mensaje de error al usuario
+          alert('No se pudo registrar la asistencia completamente');
+        }
+      } catch (apiError) {
+        console.error('Error en la solicitud de asistencia:', apiError);
+        alert('Hubo un problema al registrar la asistencia');
+      }
+    }
+  
+    // Actualizar el estado con los nuevos estudiantes reconocidos
+    setRecognizedStudents(prevStudents => {
+      const combinedStudents = [
+        ...prevStudents,
+        ...newRecognizedStudents.filter(
+          newStudent => !prevStudents.some(
+            existingStudent => existingStudent.numeroControl === newStudent.numeroControl
+          )
+        )
+      ];
+  
+      return combinedStudents;
+    });
   };
 
   const generateExcelReport = () => {
