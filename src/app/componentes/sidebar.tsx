@@ -76,7 +76,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onChangeTitle, onSetActiveView }) => 
           </a>
         </li>
         <li>
-          <a href="#alumnos" onClick={(e) => { e.preventDefault(); handleClick('alumnos', 'Alumnos'); }} className={getLinkStyle('Alumnos')}>
+          <a href="#alumnos" onClick={(e) => { e.preventDefault(); handleClick('estudiantes', 'Estudiantes'); }} className={getLinkStyle('Alumnos')}>
             {showIcons && <FaUserGraduate className="fs-4 me-2" />}
             <span>Alumnos</span>
           </a>
