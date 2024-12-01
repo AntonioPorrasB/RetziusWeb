@@ -9,7 +9,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ onChangeTitle, onSetActiveView }) => {
   const [activeLink, setActiveLink] = useState('inicio');
-  const [showIcons, setShowIcons] = useState(true); // Nueva variable de estado para controlar la visibilidad de los iconos
+  const [showIcons, setShowIcons] = useState(true);
 
   useEffect(() => {
     // Verificar el tamaño de la pantalla y actualizar la visibilidad de los iconos
@@ -51,12 +51,12 @@ const Sidebar: React.FC<SidebarProps> = ({ onChangeTitle, onSetActiveView }) => 
     >
       <div className="d-flex justify-content-between align-items-center mb-3 px-3">
         <div className="d-flex align-items-center">
-          <FaCheckSquare className="fs-3 text-success" />
-          <div className="text-white ms-2 fs-5">SaaS Lista</div>
+          <FaCheckSquare className="fs-4 text-success" />
+          <div className="text-white ms-2 fs-6">SaaS Lista</div>
         </div>
       </div>
 
-      <ul className="nav-list align-items-center" style={{ fontSize: '0.9rem', padding: '0 1rem' }}>
+      <ul className="nav-list align-items-center" style={{ fontSize: '0.85rem', padding: '0 1rem' }}>
         <li>
           <a href="#" onClick={(e) => { e.preventDefault(); handleClick('inicio', 'Inicio'); }} className={getLinkStyle('inicio')}>
             {showIcons && <FaHome className="fs-4 me-3" />}
@@ -71,14 +71,14 @@ const Sidebar: React.FC<SidebarProps> = ({ onChangeTitle, onSetActiveView }) => 
         </li>
         <li>
           <a href="#materias" onClick={(e) => { e.preventDefault(); handleClick('materias', 'Materias'); }} className={getLinkStyle('materias')}>
-            {showIcons && <FaBook className="fs-4 me-3" />}
-            <span>Materias</span>
+            {showIcons && <FaBook className="fs-4 me-2" />}
+            <span>Mat</span>
           </a>
         </li>
         <li>
-          <a href="#estudiantes" onClick={(e) => { e.preventDefault(); handleClick('estudiantes', 'Estudiantes'); }} className={getLinkStyle('Estudiantes')}>
-            {showIcons && <FaUserGraduate className="fs-4 me-3" />}
-            <span>Estudiantes</span>
+          <a href="#alumnos" onClick={(e) => { e.preventDefault(); handleClick('alumnos', 'Alumnos'); }} className={getLinkStyle('Alumnos')}>
+            {showIcons && <FaUserGraduate className="fs-4 me-2" />}
+            <span>Alumnos</span>
           </a>
         </li>
         <li>
