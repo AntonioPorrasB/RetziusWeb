@@ -72,7 +72,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onChangeTitle, onSetActiveView }) => 
         <li>
           <a href="#materias" onClick={(e) => { e.preventDefault(); handleClick('materias', 'Materias'); }} className={getLinkStyle('materias')}>
             {showIcons && <FaBook className="fs-4 me-2" />}
-            <span>Mat</span>
+            <span>Materias</span>
           </a>
         </li>
         <li>
