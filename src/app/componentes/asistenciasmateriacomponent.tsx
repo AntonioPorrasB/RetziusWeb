@@ -204,7 +204,7 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
   
     // Obtener todos los estudiantes matriculados en la materia
     try {
-        const enrolledStudentsResponse = await fetch(`https://regzusapi.onrender.com/subjects/${subjectId}/enrolled-students`, {
+        const enrolledStudentsResponse = await fetch(`https://regzusapi.onrender.com/subjects/${subjectId}/enrollments`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${document.cookie.split('token=')[1]}`,
