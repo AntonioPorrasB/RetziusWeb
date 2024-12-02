@@ -16,6 +16,13 @@ type RecognizedStudent = RecognitionResult & {
     apellido: string;
 };
 
+type EnrolledStudent = {
+  numero_control: string;
+  nombre: string;
+  apellido: string;
+  id: number;
+};
+
 const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = ({subjectId}) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -23,7 +30,30 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
   const captureInterval = 1000; // Captura cada 0.5 segundos
   const animationFrameRef = useRef<number | null>(null);
   const [recognizedStudents, setRecognizedStudents] = useState<RecognizedStudent[]>([]);
+  const [enrolledStudents, setEnrolledStudents] = useState<EnrolledStudent[]>([]);
   const [nombre, setNombre] = useState('');
+
+  useEffect(() => {
+    const fetchEnrolledStudents = async () => {
+      try {
+        const response = await fetch(`https://regzusapi.onrender.com/subjects/${subjectId}/enrollments`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${document.cookie.split('token=')[1]}`,
+          },
+        });
+        
+        if (!response.ok) throw new Error('No se pudieron cargar los estudiantes matriculados');
+
+        const data = await response.json();
+        setEnrolledStudents(data);
+      } catch (error) {
+        console.error('Error al cargar estudiantes matriculados:', error);
+      }
+    };
+
+    fetchEnrolledStudents();
+  }, [subjectId]);
 
   useEffect(() => {
     const fetchSubject = async () => {
@@ -47,36 +77,77 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
     fetchSubject();
   }, [subjectId]);
   
-  const stopRecognition = () => {
+  const stopRecognition = async () => {
+    // Stop camera and clear recognition
     if (videoRef.current && videoRef.current.srcObject) {
       const stream = videoRef.current.srcObject as MediaStream;
-  
-      // Detiene todos los tracks (cámara y micrófono si existen)
       stream.getTracks().forEach((track) => {
         track.stop();
       });
-  
-      // Limpia la referencia al stream
       videoRef.current.srcObject = null;
     }
-  
-    // Cancela cualquier frame de animación pendiente
+
+    // Cancel animation frame
     if (animationFrameRef.current) {
       cancelAnimationFrame(animationFrameRef.current);
-      animationFrameRef.current = null; // Limpia la referencia al frame
+      animationFrameRef.current = null;
     }
-  
-    // Limpia el canvas para evitar que quede la última imagen capturada
+
+    // Clear canvas
     if (canvasRef.current) {
       const context = canvasRef.current.getContext("2d");
       if (context) {
         context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
       }
     }
-  
+
+    // Determine absent students
+    const recognizedControlNumbers = new Set(
+      recognizedStudents.map(student => student.numeroControl)
+    );
+    
+    const absentStudents = enrolledStudents.filter(
+      student => !recognizedControlNumbers.has(student.numero_control)
+    );
+
+    // Send absent students to attendance API
+    if (absentStudents.length > 0) {
+      try {
+        const attendanceData = absentStudents.map(student => ({
+          student_id: student.id,
+          presente: false
+        }));
+
+        console.log('Datos de estudiantes ausentes:', attendanceData);
+        
+        const apiResponse = await fetch(`https://regzusapi.onrender.com/subjects/${subjectId}/attendance/`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${document.cookie.split('token=')[1]}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(attendanceData)
+        });
+
+        if (!apiResponse.ok) {
+          const errorData = await apiResponse.json();
+          if (errorData.detail === "Ya existe un registro de asistencia para hoy") {
+            console.warn("Asistencia ya registrada para este día.");
+          } else {
+            console.error('Error al enviar asistencia de ausentes:', errorData);
+            alert('No se pudo registrar completamente la asistencia de ausentes');
+          }
+        } else {
+          console.log(`${absentStudents.length} estudiantes marcados como ausentes`);
+        }
+      } catch (apiError) {
+        console.error('Error en la solicitud de asistencia de ausentes:', apiError);
+        alert('Hubo un problema al registrar la asistencia de ausentes');
+      }
+    }
+
     console.log("Reconocimiento facial detenido completamente.");
   };
-
   // Inicia el reconocimiento facial
   const startRecognition = () => {
     console.log("Reconocimiento facial iniciado");
