@@ -13,7 +13,8 @@ interface AttendanceRecord {
 }
 
 const formatDate = (dateString: string): string => {
-  const date = new Date(dateString);
+  const [year, month, day] = dateString.split('-').map(Number); // Descomponer la fecha
+  const date = new Date(year, month - 1, day); // Crear fecha como local (meses son 0-indexados en JS)
   return date.toLocaleDateString('es-MX', { 
     day: '2-digit', 
     month: '2-digit', 
