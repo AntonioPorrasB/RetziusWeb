@@ -10,6 +10,7 @@ type RecognitionResult =  {
 };
 
 type RecognizedStudent = RecognitionResult & {
+    id: number,
     numeroControl: string;
     nombre: string;
     apellido: string;
@@ -222,12 +223,17 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
         }
   
         const studentData = await response.json();
+        console.log('Datos del estudiante:', studentData);
+
+        console.log('ID del estudiante:', studentData.id);
   
         const recognizedStudent: RecognizedStudent = {
+          id: studentData.id,
           name: result.name,
           numeroControl: studentData.numero_control,
           nombre: studentData.nombre,
-          apellido: studentData.apellido
+          apellido: studentData.apellido,
+          
         };
   
         // Verificar si ya existe
@@ -248,7 +254,7 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
     if (newRecognizedStudents.length > 0) {
       try {
         const attendanceData = newRecognizedStudents.map(student => ({
-          student_id: parseInt(student.numeroControl),
+          student_id: student.id,
           presente: true
         }));
         console.log('Datos que se enviarán a Retzius API:', attendanceData);
