@@ -251,7 +251,7 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
           student_id: parseInt(student.numeroControl),
           presente: true
         }));
-  
+        console.log('Datos que se enviarán a Retzius API:', attendanceData);
         const apiResponse = await fetch(`https://regzusapi.onrender.com/subjects/${subjectId}/attendance/`, {
           method: 'POST',
           headers: {
