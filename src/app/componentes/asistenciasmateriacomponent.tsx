@@ -207,8 +207,18 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
     );
   
     const newRecognizedStudents: RecognizedStudent[] = [];
-  
+
     for (const result of filteredResults) {
+      // Verifica si ya fue reconocido previamente
+      const alreadyRecognized = recognizedStudents.some(
+        (student) => student.numeroControl === result.name
+      );
+  
+      if (alreadyRecognized) {
+        console.log(`Estudiante ya reconocido: ${result.name}`);
+        continue;
+      }
+  
       try {
         const response = await fetch(`https://regzusapi.onrender.com/students/by_control/${result.name}`, {
           method: 'GET',
@@ -236,14 +246,7 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
           
         };
   
-        // Verificar si ya existe
-        const isAlreadyAdded = newRecognizedStudents.some(
-          (student) => student.numeroControl === recognizedStudent.numeroControl
-        );
-  
-        if (!isAlreadyAdded) {
-          newRecognizedStudents.push(recognizedStudent);
-        }
+        newRecognizedStudents.push(recognizedStudent);
   
       } catch (error) {
         console.error(`Error al obtener datos del estudiante ${result.name}:`, error);
@@ -269,9 +272,14 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
   
         if (!apiResponse.ok) {
           const errorData = await apiResponse.json();
-          console.error('Error al enviar asistencia:', errorData);
-          // Opcional: Mostrar mensaje de error al usuario
-          alert('No se pudo registrar la asistencia completamente');
+          if (errorData.detail === "Ya existe un registro de asistencia para hoy") {
+            console.warn("Asistencia ya registrada para este estudiante.");
+          } else {
+            console.error('Error al enviar asistencia:', errorData);
+            // Opcional: Mostrar mensaje de error al usuario
+            alert('No se pudo registrar la asistencia completamente');
+          }
+
         }
       } catch (apiError) {
         console.error('Error en la solicitud de asistencia:', apiError);
