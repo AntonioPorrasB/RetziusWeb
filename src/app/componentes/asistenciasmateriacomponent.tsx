@@ -16,13 +16,6 @@ type RecognizedStudent = RecognitionResult & {
     apellido: string;
 };
 
-
-type EnrolledStudent = {
-    numero_control: string;
-    nombre: string;
-    apellido: string;
-};
-
 const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = ({subjectId}) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -31,28 +24,6 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
   const animationFrameRef = useRef<number | null>(null);
   const [recognizedStudents, setRecognizedStudents] = useState<RecognizedStudent[]>([]);
   const [nombre, setNombre] = useState('');
-  const [enrolledStudents, setEnrolledStudents] = useState<EnrolledStudent[]>([]);
-
-  useEffect(() => {
-    const fetchEnrolledStudents = async () => {
-      try {
-        const response = await fetch(`https://regzusapi.onrender.com/subjects/${subjectId}/enrollments`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${document.cookie.split('token=')[1]}`,
-          },
-        });
-        if (!response.ok) throw new Error('No se pudieron cargar los estudiantes matriculados');
-
-        const data = await response.json();
-        setEnrolledStudents(data);
-      } catch (error) {
-        console.error('Error al cargar estudiantes matriculados:', error);
-      }
-    };
-
-    fetchEnrolledStudents();
-  }, [subjectId]);
 
   useEffect(() => {
     const fetchSubject = async () => {
@@ -76,9 +47,7 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
     fetchSubject();
   }, [subjectId]);
   
-
-
-  const stopRecognition = async () => {
+  const stopRecognition = () => {
     if (videoRef.current && videoRef.current.srcObject) {
       const stream = videoRef.current.srcObject as MediaStream;
   
@@ -103,45 +72,6 @@ const AsistenciasMateriaComponent: React.FC<AsistenciasMateriaComponentProps> = 
       if (context) {
         context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
       }
-    }
-
-    try {
-      // Find students who were not recognized
-      const absentStudents = enrolledStudents.filter(
-        enrolledStudent => 
-          !recognizedStudents.some(
-            recognizedStudent => recognizedStudent.numeroControl === enrolledStudent.numero_control
-          )
-      );
-
-      // Prepare absent student data for API
-      const absenceData = absentStudents.map(student => ({
-        student_id: null, // This will need to be fetched or mapped
-        presente: false
-      }));
-
-      // Send absence data to API if there are absent students
-      if (absenceData.length > 0) {
-        const apiResponse = await fetch(`https://regzusapi.onrender.com/subjects/${subjectId}/attendance/`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${document.cookie.split('token=')[1]}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(absenceData)
-        });
-
-        if (!apiResponse.ok) {
-          const errorData = await apiResponse.json();
-          console.error('Error al enviar asistencia de ausentes:', errorData);
-          alert('No se pudo registrar completamente la asistencia de ausentes');
-        } else {
-          console.log(`Marcados como ausentes: ${absenceData.length} estudiantes`);
-        }
-      }
-    } catch (error) {
-      console.error('Error al procesar asistencia de ausentes:', error);
-      alert('Hubo un problema al registrar los ausentes');
     }
   
     console.log("Reconocimiento facial detenido completamente.");
